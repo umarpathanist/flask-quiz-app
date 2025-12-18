@@ -42,14 +42,8 @@ body {
 }
 
 @keyframes slideUp {
-  from {
-    transform: translateY(40px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .logo {
@@ -114,7 +108,12 @@ button {
   transition: 0.3s;
 }
 
-button:hover {
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }
@@ -122,7 +121,7 @@ button:hover {
 .error {
   color: #e74c3c;
   font-size: 14px;
-  margin-bottom: 10px;
+  margin-top: 8px;
 }
 
 .footer {
@@ -130,50 +129,10 @@ button:hover {
   font-size: 13px;
   color: #777;
 }
-
-.floating {
-  position: absolute;
-  font-size: 40px;
-  opacity: 0.25;
-  animation: float 6s ease-in-out infinite;
-}
-
-.floating:nth-child(1) {
-  top: 15%;
-  left: 10%;
-}
-
-.floating:nth-child(2) {
-  top: 70%;
-  left: 80%;
-  animation-delay: 2s;
-}
-
-.floating:nth-child(3) {
-  top: 40%;
-  left: 85%;
-  animation-delay: 4s;
-}
-
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-25px); }
-}
-
-@media (max-width: 480px) {
-  .card {
-    padding: 25px;
-  }
-}
 </style>
 </head>
 
 <body>
-
-<div class="floating">❓</div>
-<div class="floating">🎯</div>
-<div class="floating">🏆</div>
 
 <div class="card">
   <div class="logo">🎯</div>
@@ -186,38 +145,63 @@ button:hover {
   </div>
 
   {% if error %}
-    <div class="error">{{ error }}</div>
+    <div class="error" id="serverError">{{ error }}</div>
   {% endif %}
 
   <form method="POST" action="/">
     <input
-  type="text"
-  name="name"
-  placeholder="Enter your name"
-  required
-  minlength="3"
-  maxlength="20"
-  pattern="[A-Za-z ]+"
-  title="Only letters and spaces allowed (3–20 characters)"
-  oninput="this.value = this.value.replace(/[^A-Za-z ]/g, '')"
-/>
+      type="text"
+      id="nameInput"
+      name="name"
+      placeholder="Enter your name"
+      autocomplete="off"
+      required
+    />
 
-    <button type="submit">🚀 Start Quiz</button>
+    <!-- Client-side error -->
+    <div class="error" id="clientError" style="display:none;"></div>
+
+    <button type="submit" id="startBtn" disabled>🚀 Start Quiz</button>
   </form>
 
-  <div class="footer">
-    Compete • Learn • Win
-  </div>
+  <div class="footer">Compete • Learn • Win</div>
 </div>
 
-      <script>
-  const nameInput = document.querySelector('input[name="name"]');
+<script>
+  const input = document.getElementById("nameInput");
+  const button = document.getElementById("startBtn");
+  const clientError = document.getElementById("clientError");
+  const serverError = document.getElementById("serverError");
 
-  nameInput.addEventListener("blur", () => {
-    nameInput.value = nameInput.value.trim().replace(/\s+/g, " ");
+  button.disabled = true;
+
+  input.addEventListener("input", () => {
+    // allow only letters
+    input.value = input.value.replace(/[^A-Za-z]/g, "");
+
+    const count = input.value.length;
+
+    if (count < 3) {
+      clientError.style.display = "block";
+      clientError.textContent = `⚠️ Minimum 3 characters required (${count}/3)`;
+      button.disabled = true;
+    } else {
+      clientError.style.display = "none";
+      button.disabled = false;
+
+      // hide server error if user fixes input
+      if (serverError) {
+        serverError.style.display = "none";
+      }
+    }
+  });
+
+  document.querySelector("form").addEventListener("submit", (e) => {
+    if (button.disabled) {
+      e.preventDefault();
+    }
   });
 </script>
-
 
 </body>
 </html>

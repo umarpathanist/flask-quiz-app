@@ -21,7 +21,7 @@ questions = [
     ["What is the smallest country in the world?", "San Marino", "Vatican City", "Monaco", "Liechtenstein", 2]
 ]
 
-prizes = [100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000]
+prizes = [500,1500,2500,3500,4500,5500,6500,7500,8500,9500,10500]
 
 # Path to JSON file to store results
 RESULTS_FILE = os.path.join(app.root_path, "results.json")
@@ -51,28 +51,53 @@ def save_result(name, amount, status, correct, wrong):
         json.dump(results, f, indent=2)
 
 
+# @app.route("/", methods=["GET", "POST"])
+# def home():
+#     if request.method == "POST":
+#         student_name = request.form.get("name", "").strip()
+
+#         # ✅ Server-side validation
+#         if not student_name.replace(" ", "").isalpha():
+#             return render_template(
+#                 "index.html",
+#                 error="Name must contain only letters and spaces."
+#             )
+
+#         if len(student_name) < 3 or len(student_name) > 20:
+#             return render_template(
+#                 "index.html",
+#                 error="Name must be between 3 and 20 characters."
+#             )
+
+#         session["student_name"] = student_name
+#         return redirect(url_for("quiz"))
+
+#     return render_template("index.html")
+
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
-        student_name = request.form.get("name", "").strip()
+        name = request.form.get("name", "").strip()
 
-        # ✅ Server-side validation
-        if not student_name.replace(" ", "").isalpha():
+        # Allow only letters
+        if not name.isalpha():
             return render_template(
                 "index.html",
-                error="Name must contain only letters and spaces."
+                error="Name must contain only letters."
             )
 
-        if len(student_name) < 3 or len(student_name) > 20:
+        # 🔥 Character-based rule (a=1, aa=2, aaa=3)
+        if len(name) < 3:
             return render_template(
                 "index.html",
-                error="Name must be between 3 and 20 characters."
+                error="Minimum 3 characters required."
             )
 
-        session["student_name"] = student_name
+        session["student_name"] = name
         return redirect(url_for("quiz"))
 
     return render_template("index.html")
+
 
 
 @app.route("/quiz", methods=["GET", "POST"])
