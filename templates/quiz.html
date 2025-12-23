@@ -98,7 +98,7 @@ button {
 
   <div class="question">{{ question_text }}</div>
 
-  <!-- ✅ FEEDBACK BLOCK (RESTORED) -->
+  <!-- FEEDBACK BLOCK (RESTORED) -->
   {% if feedback %}
     <div class="feedback {{ 'correct' if feedback == 'correct' else 'wrong' }}">
       {% if feedback == 'correct' %}
@@ -110,31 +110,34 @@ button {
     </div>
   {% endif %}
 
-  <!-- ✅ ONLY ONE FORM -->
-  <form method="POST" action="/quiz">
+  <!-- ONLY ONE FORM -->
+<form method="POST" action="/quiz">
 
-    {% if not show_next %}
-      <div class="options">
-        <label><input type="radio" name="answer" value="1" required> {{ option_a }}</label>
-        <label><input type="radio" name="answer" value="2"> {{ option_b }}</label>
-        <label><input type="radio" name="answer" value="3"> {{ option_c }}</label>
-        <label><input type="radio" name="answer" value="4"> {{ option_d }}</label>
-      </div>
+  {% if not show_next %}
+    <div class="options">
+      {% for opt in options %}
+        <label>
+          <input type="radio" name="answer" value="{{ loop.index }}" required>
+          {{ opt }}
+        </label>
+      {% endfor %}
+    </div>
 
-      <button type="submit">Submit Answer</button>
+    <button type="submit">Submit Answer</button>
 
+  {% else %}
+    {% if q_index + 1 == questions|length %}
+      <button type="submit">Submit Quiz ✅</button>
     {% else %}
-      {% if q_index + 1 == questions|length %}
-        <button type="submit">Submit Quiz ✅</button>
-      {% else %}
-        <button type="submit">Next Question ➜</button>
-      {% endif %}
+      <button type="submit">Next Question ➜</button>
     {% endif %}
+  {% endif %}
 
-    <input type="hidden" name="q_index" value="{{ q_index }}">
-    <input type="hidden" name="current_prize" value="{{ current_prize }}">
+  <input type="hidden" name="q_index" value="{{ q_index }}">
+  <input type="hidden" name="current_prize" value="{{ current_prize }}">
 
-  </form>
+</form>
+
 
   <div class="prize">💰 Current Winnings: ₹{{ current_prize }}</div>
 

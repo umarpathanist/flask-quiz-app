@@ -1,0 +1,115 @@
+[
+  {
+    "id": 1,
+    "question": "Who is Shah Rukh Khan?",
+    "options": [
+      "WWE Wrestler",
+      "Plumber",
+      "Actor",
+      "Astronaut"
+    ],
+    "correct_option": 3
+  },
+  {
+    "id": 2,
+    "question": "What is the capital of France?",
+    "options": [
+      "Berlin",
+      "Paris"
+    ],
+    "correct_option": 2
+  },
+  {
+    "id": 3,
+    "question": "Which planet is known as the Red Planet?",
+    "options": [
+      "Earth",
+      "Venus",
+      "Mars",
+      "Jupiter"
+    ],
+    "correct_option": 3
+  },
+  {
+    "id": 4,
+    "question": "What is the largest mammal?",
+    "options": [
+      "Shark",
+      "Blue Whale"
+    ],
+    "correct_option": 2
+  },
+  {
+    "id": 5,
+    "question": "Who wrote 'Romeo and Juliet'?",
+    "options": [
+      "William Shakespeare",
+      "Jane Austen"
+    ],
+    "correct_option": 1
+  },
+  {
+    "id": 6,
+    "question": "What is the square root of 64?",
+    "options": [
+      "8",
+      "10",
+      "6",
+      "12"
+    ],
+    "correct_option": 1
+  },
+  {
+    "id": 7,
+    "question": "Which country is known as the Land of the Rising Sun?",
+    "options": [
+      "India",
+      "South Korea",
+      "Japan",
+      "China"
+    ],
+    "correct_option": 3
+  },
+  {
+    "id": 8,
+    "question": "Who painted the Mona Lisa?",
+    "options": [
+      "Claude Monet",
+      "Pablo Picasso",
+      "Leonardo da Vinci",
+      "Vincent van Gogh"
+    ],
+    "correct_option": 3
+  },
+  {
+    "id": 9,
+    "question": "What is the fastest land animal?",
+    "options": [
+      "Horse",
+      "Lion",
+      "Cheetah",
+      "Elephant"
+    ],
+    "correct_option": 3
+  },
+  {
+    "id": 10,
+    "question": "Which ocean is the largest?",
+    "options": [
+      "Indian Ocean",
+      "Pacific Ocean"
+    ],
+    "correct_option": 2
+  },
+  { 
+    "id": 11,
+    "question": "What is the smallest country in the world?",
+    "options": [
+      "San Marino",
+      "Vatican City",
+      "Monaco",
+      "Liechtenstein"
+    ],
+    "correct_option": 2
+  }
+]

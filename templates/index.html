@@ -8,7 +8,7 @@
 <style>
 * {
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  font-family: "Poppins";
 }
 
 body {
@@ -46,37 +46,25 @@ body {
   to { transform: translateY(0); opacity: 1; }
 }
 
-.logo {
-  font-size: 48px;
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
 }
 
-.card h1 {
-  margin: 0;
-  font-size: 28px;
-  color: #333;
+.logo {
+  font-size: 40px;
+  font-weight: 700;
 }
 
-.subtitle {
-  color: #666;
-  margin: 10px 0 25px;
-  font-size: 15px;
-}
-
-.features {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 25px;
-}
-
-.feature {
+.weather {
   font-size: 14px;
-  color: #444;
-}
-
-.feature span {
-  display: block;
-  font-size: 22px;
+  background: #eef5ff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 800;
+  color: #333;
 }
 
 input {
@@ -135,14 +123,17 @@ button:hover:not(:disabled) {
 <body>
 
 <div class="card">
-  <div class="logo">🎯</div>
+
+  <div class="header-row">
+    <div class="logo">🎯 </div>
+
+    <div class="weather" id="weatherBox">
+      ⛅ Loading...
+    </div>
+  </div>
+
   <h1>Ultimate Quiz Challenge</h1>
   <p class="subtitle">Test your knowledge & climb the leaderboard</p>
-
-  <div class="features">
-    <div class="feature"><span>🏆</span>Live Ranking</div>
-    <div class="feature"><span>⏱</span>Fast Play</div>
-  </div>
 
   {% if error %}
     <div class="error" id="serverError">{{ error }}</div>
@@ -158,7 +149,6 @@ button:hover:not(:disabled) {
       required
     />
 
-    <!-- Client-side error -->
     <div class="error" id="clientError" style="display:none;"></div>
 
     <button type="submit" id="startBtn" disabled>🚀 Start Quiz</button>
@@ -168,39 +158,60 @@ button:hover:not(:disabled) {
 </div>
 
 <script>
-  const input = document.getElementById("nameInput");
-  const button = document.getElementById("startBtn");
-  const clientError = document.getElementById("clientError");
-  const serverError = document.getElementById("serverError");
+const input = document.getElementById("nameInput");
+const button = document.getElementById("startBtn");
+const clientError = document.getElementById("clientError");
+const serverError = document.getElementById("serverError");
+const weatherBox = document.getElementById("weatherBox");
 
-  button.disabled = true;
+button.disabled = true;
 
-  input.addEventListener("input", () => {
-    // allow only letters
-    input.value = input.value.replace(/[^A-Za-z]/g, "");
+// -------- NAME VALIDATION --------
+input.addEventListener("input", () => {
 
-    const count = input.value.length;
+  input.value = input.value
+      .replace(/[^A-Za-z ]/g, "")   // only letters + space
+      .replace(/\s+/g, " ");        // remove double spaces
 
-    if (count < 3) {
-      clientError.style.display = "block";
-      clientError.textContent = `⚠️ Minimum 3 characters required (${count}/3)`;
-      button.disabled = true;
-    } else {
-      clientError.style.display = "none";
-      button.disabled = false;
+  input.value = input.value.slice(0, 25); // max 25 char
 
-      // hide server error if user fixes input
-      if (serverError) {
-        serverError.style.display = "none";
-      }
-    }
+  const count = input.value.trim().length;
+
+  if (count < 3) {
+    clientError.style.display = "block";
+    clientError.textContent = `⚠️ Minimum 3 characters required (${count}/3)`;
+    button.disabled = true;
+  } else {
+    clientError.style.display = "none";
+    button.disabled = false;
+
+    if (serverError) serverError.style.display = "none";
+  }
+});
+
+document.querySelector("form").addEventListener("submit", (e) => {
+  if (button.disabled) e.preventDefault();
+});
+
+// -------- WEATHER --------
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(success => {
+    const lat = success.coords.latitude;
+    const lon = success.coords.longitude;
+
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+      .then(res => res.json())
+      .then(data => {
+        const temp = data.current_weather.temperature;
+        weatherBox.innerHTML = `🌤️ ${temp}°C`;
+      })
+      .catch(() => weatherBox.innerHTML = "🌤️ Weather Unavailable");
+  }, () => {
+    weatherBox.innerHTML = "🌤️ Location Blocked";
   });
-
-  document.querySelector("form").addEventListener("submit", (e) => {
-    if (button.disabled) {
-      e.preventDefault();
-    }
-  });
+} else {
+  weatherBox.innerHTML = "🌤️ Not Supported";
+}
 </script>
 
 </body>
